@@ -1,33 +1,63 @@
+const tempFolder = 'temp';
+const distFolder = 'dist';
+
 var gulp = require('gulp');
+var gulpClean = require('gulp-clean');
+var gulpTypeScript = require('gulp-typescript');
+var gulpTypeScriptProject = gulpTypeScript.createProject('tsconfig.json');
+var gulpSequence = require('run-sequence');
+var gulpConcat = require('gulp-concat');
+var gulpUglify = require('gulp-uglify-es').default;
 
-var clean = require('gulp-clean');
-gulp.task('clean', function() {
-	return gulp.src('rel')
-		.pipe(clean());
+function clean(dest) {
+	return gulp.src(dest)
+		.pipe(gulpClean());
+}
+
+function compile(dest) {
+	return gulpTypeScriptProject.src()
+		.pipe(gulpTypeScriptProject())
+		.js.pipe(gulp.dest(dest));
+}
+
+function copy(sourcePattern, dest) {
+	gulp.src(sourcePattern)
+		.pipe(gulp.dest(dest));
+}
+
+function concat(sourcePattern, destFolder, destFile) {
+	return gulp.src(sourcePattern)
+		.pipe(gulpConcat(destFile))
+		.pipe(gulp.dest(destFolder));
+}
+
+gulp.task('clean-dist', function() {
+	clean(distFolder);
 });
 
-var ts = require('gulp-typescript');
-var project = ts.createProject('tsconfig.json');
+gulp.task('clean-temp', function() {
+	clean(tempFolder);
+});
+
 gulp.task('compile', function() {
-    return project.src()
-		.pipe(project())
-		.js.pipe(gulp.dest('rel'));
+    return compile(tempFolder);
 });
 
-var copy = require('gulp-copy');
 gulp.task('copy', function() {
-	gulp.src('./site/**/*')
-		.pipe(gulp.dest('rel'));
+	copy('./site/**/*')
+		.pipe(gulp.dest(distFolder));
 });
 
-var sequence = require('run-sequence');
 gulp.task('build', function(done) {
-	sequence('clean', 'compile', 'copy', done);
+	gulpSequence('clean-temp', 'compile', 'concat', 'uglify', done);
 });
 
-var concat = require('gulp-concat');
 gulp.task('concat', function() {
-	return gulp.src('./rel/**/*.js')
-		.pipe(concat('rip.js'))
-		.pipe(gulp.dest('./t'));
+	concat('./temp/**/*.js', 'temp', 'rip.js');
+});
+
+gulp.task('uglify', function() {
+	return gulp.src('./temp/**/*.js')
+		.pipe(gulpUglify())
+		.pipe(gulp.dest('temp'));
 });
