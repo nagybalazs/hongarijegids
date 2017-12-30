@@ -4,7 +4,7 @@
 var port = 53333;
 
 //module dependencies
-var serverFactory = require("../temp/server.factory");
+var serverFactory = require("../dist/server.factory");
 var http = require("http");
 
 //create http server

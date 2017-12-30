@@ -17,10 +17,10 @@ export class Server {
         this.server = express();
 
         this.server.use(bodyparser.json());
-        this.server.use('/css', express.static(path.join(__dirname, 'css')));
-        this.server.use('/js', express.static(path.join(__dirname, 'js')));
-        this.server.use('/img', express.static(path.join(__dirname, 'img')));
-        this.server.use('/fonts', express.static(path.join(__dirname, 'fonts')));
+        this.server.use('/css', express.static(path.join(__dirname, 'site/css')));
+        this.server.use('/js', express.static(path.join(__dirname, 'site/js')));
+        this.server.use('/img', express.static(path.join(__dirname, 'site/img')));
+        this.server.use('/fonts', express.static(path.join(__dirname, 'site/fonts')));
 
         let dataService = container.get(DataService);
         let emailService = container.get(EmailService);
@@ -50,7 +50,7 @@ export class Server {
         });
 
         this.server.get('/', (request: express.Request, response: express.Response) => {
-            response.sendFile(path.join(__dirname + '/index.html'));
+            response.sendFile(path.join(__dirname + '/site/index.html'));
         });
 
         this.server.use((request: express.Request, response: express.Response) => {

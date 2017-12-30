@@ -35,29 +35,20 @@ gulp.task('clean-dist', function() {
 	clean(distFolder);
 });
 
-gulp.task('clean-temp', function() {
-	clean(tempFolder);
-});
-
 gulp.task('compile', function() {
-    return compile(tempFolder);
+    return compile(distFolder);
 });
 
 gulp.task('copy', function() {
-	copy('./site/**/*')
-		.pipe(gulp.dest(distFolder));
+	copy('site/**/*', distFolder + '/site');
 });
 
 gulp.task('build', function(done) {
-	gulpSequence('clean-temp', 'compile', 'concat', 'uglify', done);
-});
-
-gulp.task('concat', function() {
-	concat('./temp/**/*.js', 'temp', 'rip.js');
+	gulpSequence('clean-dist', 'compile', 'uglify', 'copy', done);
 });
 
 gulp.task('uglify', function() {
-	return gulp.src('./temp/**/*.js')
+	return gulp.src('./' + distFolder + '/**/*.js')
 		.pipe(gulpUglify())
-		.pipe(gulp.dest('temp'));
+		.pipe(gulp.dest(distFolder));
 });
