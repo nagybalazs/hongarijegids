@@ -2,6 +2,8 @@ import {
     OfferType
 } from '../index';
 
+import * as moment from 'moment';
+
 export class Offer {
 
     constructor() { }
@@ -10,7 +12,7 @@ export class Offer {
         this.id = offer.id;
         this.email = offer.email;
         this.name = offer.name;
-        this.preferredDate = offer.preferredDate;
+        this.prefdate = moment(offer.prefdate).format('YYYY-MM-DD');
         this.timestamp = offer.timestamp;
         this.type = +offer.type;
         this.content = offer.content;
@@ -63,10 +65,14 @@ export class Offer {
         }
     }
 
+    get preferredDate(): Date {
+        return moment(this.prefdate).toDate();
+    }
+
     id: number;
     name: string;
     email: string;
-    preferredDate: Date;
+    prefdate: string;
     type: OfferType;
     timestamp: number;
     content: string;

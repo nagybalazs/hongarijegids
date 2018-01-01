@@ -4,7 +4,7 @@ import * as email from 'nodemailer';
 import * as transport from 'nodemailer-smtp-transport';
 import config from '../../config';
 import { Email } from './index';
-import { Offer } from '../dataservice/index';
+import { Offer } from '../dataaccess/index';
 
 type sendCallback = (error: any, result: any, fields: any) => any;
 
@@ -33,7 +33,7 @@ export class EmailService {
             `
                 <p><b>Név: </b>${offer.name}</p>
                 <p><b>Email: </b>${offer.email}</p>
-                <p><b>Előnyben részesített dátum: </b>${offer.preferredDate}</p>
+                <p><b>Előnyben részesített dátum: </b>${offer.prefdate}</p>
                 <p><b>Típus: </b>${offer.typeString}</p>
                 <p><b>Üzenet: </b>${offer.content}</p>
             `;

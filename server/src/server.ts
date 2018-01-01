@@ -3,7 +3,7 @@ import * as bodyparser from 'body-parser';
 import * as express from 'express';
 import { injectable } from 'inversify';
 import container from './inversify.config';
-import { OfferService, Offer } from './services/dataservice/index';
+import { OfferService, Offer } from './services/dataaccess/index';
 import { EmailService, Email } from './services/emailservice/index';
 import * as path from 'path';
 
@@ -31,8 +31,9 @@ export class Server {
         this.server.post('/offer', (request: express.Request, response: express.Response) => {
             let offer: Offer = new Offer().populate(request.body as Offer);
             let result: { dberr: boolean, emailerr: boolean } = { dberr: false, emailerr: false };
-            this._offerService.addOffer(offer, (e: any, r: any, f: any) => {
+            this._offerService.add(offer, (e: any, r: any, f: any) => {
                 if(e) {
+                    console.log(e);
                     result.dberr = true;
                 }
                 this._emailService.sendOfferEmail(offer, (e, i) => {
@@ -50,6 +51,15 @@ export class Server {
         
         this.server.get('/offer', (request: express.Request, response: express.Response) => {
             response.redirect('/');
+        });
+
+        this.server.get('/offers', (request: express.Request, response: express.Response) => {
+            this._offerService.getAll((fakk: any) => {
+                console.log(JSON.stringify(fakk));
+            });
+            return response.json({
+                res: 'ok'
+            });
         });
 
         this.server.get('/', (request: express.Request, response: express.Response) => {

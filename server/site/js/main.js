@@ -93,7 +93,7 @@ $('#offer-submit').click(function() {
 	var data = {
 		name: userName,
 		email: userMail,
-		preferredDate: dateTime,
+		prefdate: dateTime,
 		content: content,
 		type: type
 	};
