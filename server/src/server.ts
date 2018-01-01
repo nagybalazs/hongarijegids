@@ -3,12 +3,15 @@ import * as bodyparser from 'body-parser';
 import * as express from 'express';
 import { injectable } from 'inversify';
 import container from './inversify.config';
-import { DataService, Offer } from './services/dataservice/index';
+import { OfferService, Offer } from './services/dataservice/index';
 import { EmailService, Email } from './services/emailservice/index';
 import * as path from 'path';
 
 @injectable()
 export class Server {
+
+    private _offerService: OfferService;
+    private _emailService: EmailService;
 
     public server: express.Express;
 
@@ -22,17 +25,17 @@ export class Server {
         this.server.use('/img', express.static(path.join(__dirname, 'site/img')));
         this.server.use('/fonts', express.static(path.join(__dirname, 'site/fonts')));
 
-        let dataService = container.get(DataService);
-        let emailService = container.get(EmailService);
+        this._offerService = container.get(OfferService);
+        this._emailService = container.get(EmailService);
 
         this.server.post('/offer', (request: express.Request, response: express.Response) => {
             let offer: Offer = new Offer().populate(request.body as Offer);
             let result: { dberr: boolean, emailerr: boolean } = { dberr: false, emailerr: false };
-            dataService.addOffer(offer, (e: any, r: any, f: any) => {
+            this._offerService.addOffer(offer, (e: any, r: any, f: any) => {
                 if(e) {
                     result.dberr = true;
                 }
-                emailService.sendOfferEmail(offer, (e, i) => {
+                this._emailService.sendOfferEmail(offer, (e, i) => {
                     if(e) {
                         result.emailerr = true;
                     }

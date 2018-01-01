@@ -1,21 +1,26 @@
-import config from '../config';
 import * as mysql from 'mysql';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { IDatabaseConfig } from './index';
+import 'reflect-metadata';
 
 @injectable()
 export class Database {
     
-    constructor() { }
+    private _config: IDatabaseConfig;
 
-    get connection() {
+    constructor(@inject(Symbol.for("IDatabaseConfig")) config: IDatabaseConfig) { 
+        this._config = config;
+    }
+
+    get connection(): mysql.Connection {
         let connection: mysql.Connection = mysql.createConnection({
-            port: config.mysqlConfig.port,
-            user: config.mysqlConfig.user,
-            password: config.mysqlConfig.password,
-            host: config.mysqlConfig.host,
-            database: config.mysqlConfig.database
+            port: this._config.port,
+            user: this._config.user,
+            password: this._config.password,
+            host: this._config.host,
+            database: this._config.database
         });
         return connection;
     }
-
+    
 }
