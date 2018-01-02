@@ -15,36 +15,42 @@ export class OfferService extends DataService  {
         super(database);
     }
 
-    public add(offer: Offer, callback: queryCallback): void {
-        this._database.connection.connect((err) => {
+    public add(offer: Offer, callback: any): void {
+        let connection = this._database.connection;
+        connection.connect((err) => {
             if(err) {
+                callback(err);
                 return;
             }
-            this._database.connection.query('INSERT INTO `offerrequests` SET ?', offer, callback);
-            this._database.connection.end();
+            connection.query('INSERT INTO `offerrequests` SET ?', offer, (error, result, fields) => {
+                callback(err);
+                connection.end();
+                return;
+            });
         });
     }
 
     public getAll(callback: any): void {
-        this._database.connection.connect((err) => {
+        let connection = this._database.connection;
+        connection.connect((err) => {
             if(err) {
-                // empty result set?
+                callback(err, null);
                 return;
             }
-            this._database.connection.query('SELECT * FROM `offerrequests`', (error, results, fields) => {
+            connection.query('SELECT * FROM `offerrequests`', (error, results, fields) => {
+                let offers = new Array<Offer>();
                 if(!results || results.length < 1) {
+                    callback(null, offers);
                     return;
                 }
-                let offers = new Array<Offer>();
-                
                 results.forEach((offer: any) => {
                     let populated = new Offer();
                     populated.populate(offer);
                     offers.push(populated);
                 });
-
-                callback(offers);
-
+                callback(null, offers);
+                connection.end();
+                return;
             });
         });
     }
