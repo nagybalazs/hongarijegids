@@ -103,7 +103,7 @@ $('#offer-submit').click(function() {
 	
 	$.ajax({
 		method: 'POST',
-		url: '/offer',
+		url: '/offers',
 		data: up,
 		contentType: 'application/json; charset=utf-8',
 		dataType: 'json',

@@ -4,7 +4,6 @@ import * as email from 'nodemailer';
 import * as transport from 'nodemailer-smtp-transport';
 import config from '../../config';
 import { Email } from './index';
-import { Offer } from '../dataaccess/index';
 
 type sendCallback = (error: any, result: any, fields: any) => any;
 
@@ -24,30 +23,6 @@ export class EmailService {
                 pass: config.smtpConfig.password
             }
         });
-
-        this._notifUser = config.commonConfig.notifyUser;
-    }
-
-    public sendOfferEmail(offer: Offer, callback: sendCallback, error?: any) {
-        let bodyHtml = 
-            `
-                <p><b>Név: </b>${offer.name}</p>
-                <p><b>Email: </b>${offer.email}</p>
-                <p><b>Előnyben részesített dátum: </b>${offer.prefdate}</p>
-                <p><b>Típus: </b>${offer.typeString}</p>
-                <p><b>Üzenet: </b>${offer.content}</p>
-            `;
-
-        if(error) {
-            bodyHtml += 
-                `
-                    <p>${JSON.stringify(error)}</p>
-                `;
-        }
-
-        let subject = 'Új ajánlatkérés';
-        let mail: Email = { from: this._notifUser, to: this._notifUser, html: bodyHtml, subject: subject, text: '' };
-        this.sendMail(mail, callback);
     }
 
     public sendMail(mail: Email, callback: sendCallback): void {

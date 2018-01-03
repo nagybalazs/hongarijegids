@@ -5,6 +5,7 @@ import { injectable } from 'inversify';
 import container from './inversify.config';
 import { OfferService, Offer } from './services/dataaccess/index';
 import { EmailService, Email } from './services/emailservice/index';
+import { OfferController } from './controllers/index';
 import * as path from 'path';
 
 @injectable()
@@ -12,6 +13,7 @@ export class Server {
 
     private _offerService: OfferService;
     private _emailService: EmailService;
+    private _offerController: OfferController;
 
     public server: express.Express;
 
@@ -27,28 +29,9 @@ export class Server {
 
         this._offerService = container.get(OfferService);
         this._emailService = container.get(EmailService);
+        this._offerController = container.get(OfferController);
 
-        this.server.post('/offers', (request: express.Request, response: express.Response) => {
-            let offer: Offer = new Offer().populate(request.body as Offer);
-            let result: { dberr: boolean, emailerr: boolean } = { dberr: false, emailerr: false };
-            this._offerService.add(offer, (error: any) => {
-                if(error) {
-                    result.dberr = true;
-                }
-
-                // TODO: outsource
-                this._emailService.sendOfferEmail(offer, (e, i) => {
-                    if(error) {
-                        result.emailerr = true;
-                    }
-                    
-                    return response.json({
-                        result
-                    });
-
-                }, error);
-            });
-        });
+        this._offerController.registerRoutes(this.server);
 
         this.server.get('/offers', (request: express.Request, response: express.Response) => {
 
