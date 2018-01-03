@@ -1,0 +1,5 @@
+export class Smtp {
+
+    constructor() { }
+
+}

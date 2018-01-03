@@ -57,7 +57,7 @@ export class OfferController {
                 <p><b>Üzenet: </b>${offer.content}</p>
             `;
         let mail: Email = { from: '', to: '', html: '', subject: '', text: '' };
-        this._emailService.sendMail(mail, (err) => {
+        this._emailService.sendMail(mail, (err: any) => {
             callback(err);
         });
     }

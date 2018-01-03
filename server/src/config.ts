@@ -14,7 +14,8 @@ let config: {
         port: number,
         host: string,
         user: string,
-        password: string
+        password: string,
+        secure: boolean
     }
 } = { 
     mysqlConfig: {
@@ -28,7 +29,8 @@ let config: {
         port: 465,
         host: 'a2hosting.com',
         user: 'info@hongarijegids.com',
-        password: 'Password11'
+        password: 'Password11',
+        secure: true
     },
     commonConfig: {
         notifyUser: 'info@hongarijegids.com',

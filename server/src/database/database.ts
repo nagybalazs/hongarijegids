@@ -8,7 +8,7 @@ export class Database {
     
     private _config: IDatabaseConfig;
 
-    constructor(@inject(Symbol.for("IDatabaseConfig")) config: IDatabaseConfig) { 
+    constructor(@inject(Symbol.for('IDatabaseConfig')) config: IDatabaseConfig) { 
         this._config = config;
     }
 
