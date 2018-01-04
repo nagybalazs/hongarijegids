@@ -3,3 +3,4 @@
 /server/rel
 /server/t
 /server/npm-debug.log
+/server/*.log

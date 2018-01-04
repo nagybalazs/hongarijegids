@@ -4,8 +4,8 @@
   "description": "hongarijegids portfolio site",
   "main": "index.js",
   "scripts": {
-    "dev": "SET NODE_ENV=development && nodemon ./bin/www",
-    "start": "node ./bin/www"
+    "dev": "(SET NODE_ENV=development) && (node ./bin/www)",
+    "prod": "(SET NODE_ENV=production) && (node ./bin/www)"
   },
   "author": "nagy.balazs",
   "license": "ISC",
@@ -19,7 +19,8 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.10",
-    "restify": "^6.3.4"
+    "restify": "^6.3.4",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
@@ -31,6 +32,7 @@
     "@types/nodemailer-smtp-transport": "^2.7.4",
     "@types/reflect-metadata": "0.0.5",
     "@types/restify": "^5.0.6",
+    "@types/winston": "^2.3.7",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
