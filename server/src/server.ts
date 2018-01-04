@@ -4,7 +4,6 @@ import * as path from 'path';
 import { inject, injectable } from 'inversify';
 import { OfferController, StaticController } from './controllers/index';
 import container from './inversify.config';
-import { Logger } from './logger/index';
 
 @injectable()
 export class Server {
@@ -12,7 +11,6 @@ export class Server {
     private _server: express.Express;
 
     constructor(
-        @inject(Logger) logger: Logger,
         @inject(OfferController) offerController: OfferController,
         @inject(StaticController) staticController: StaticController) {
 
