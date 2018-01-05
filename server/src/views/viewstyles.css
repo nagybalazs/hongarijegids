@@ -1,0 +1,43 @@
+.nav .nav-item .nav-link {
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.nav.nav-tabs {
+    background-color: rgba(41,58,74,.95);
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: rgba(41,58,74,.95);
+}
+
+.offer {
+    padding: 15px 0 15px 0;
+}
+
+.offer .header {
+    border: 1px solid #293a4a;
+    border-radius: 3px 3px 0 0;
+    margin: 0 auto;
+    max-width: 603px;
+    background-color: rgba(41,58,74,.95);
+    padding: 10px 15px;
+    text-transform: uppercase;
+    color: white;
+}
+
+.offer .holder {
+    margin-top: 20px;
+    border-radius: 0 0 3px 3px;
+    max-width: 600px;
+    min-height: 250px;
+    padding: 10px 15px;
+    margin: 0 auto;
+    -webkit-box-shadow: 1px 1px 3px 0px rgba(184,184,184,1);
+    -moz-box-shadow: 1px 1px 3px 0px rgba(184,184,184,1);
+    box-shadow: 0 0 3px rgba(0,0,0,.2);
+}
+
+.offer-container:first-child .offer {
+    padding-top: 30px;
+}

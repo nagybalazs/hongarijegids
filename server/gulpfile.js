@@ -43,8 +43,20 @@ gulp.task('copy', function() {
 	copy('site/**/*', distFolder + '/site');
 });
 
+gulp.task('copy-views', function() {
+	copy('src/views/**/*.ejs', distFolder + '/views');
+});
+
+gulp.task('copy-view-styles', function() {
+	copy('src/views/**/*.css', distFolder + '/site/css');
+});
+
+gulp.task('copy-view-scripts', function() {
+	copy('src/views/**/*.js', distFolder + '/site/js');
+});
+
 gulp.task('build', function(done) {
-	gulpSequence('clean-dist', 'compile', 'uglify', 'copy', done);
+	gulpSequence('clean-dist', 'compile', 'uglify', 'copy-view-styles', 'copy-view-scripts', 'copy-views', 'copy', done);
 });
 
 gulp.task('uglify', function() {

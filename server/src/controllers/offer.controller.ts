@@ -5,6 +5,8 @@ import { inject, injectable } from 'inversify';
 import * as express from 'express';
 import config from '../config';
 import { Logger } from '../logger/index'
+import * as path from 'path';
+import * as moment from 'moment';
 
 @injectable()
 export class OfferController {
@@ -13,19 +15,21 @@ export class OfferController {
     private _logger: Logger;
     private _offerService: OfferService;
     private _emailService: EmailService;
+    private _viewRoot: string;
 
     constructor(
         @inject(Logger) logger: Logger,
         @inject(OfferService) offerService: OfferService,
         @inject(EmailService) emailService: EmailService
-    ) { 
+    ) {
         this._logger = logger;
         this._offerService = offerService;
         this._emailService = emailService;
     }
 
-    public registerRoutes(server: express.Express): express.Express {
+    public registerRoutes(server: express.Express, viewRoot: string): express.Express {
         this._server = server;
+        this._viewRoot = viewRoot;
         this.registerPostOffer()
             .registerGetOffers();
         return server;
@@ -65,7 +69,7 @@ export class OfferController {
                     this._logger.error('[get]/offers', logInformation);
                     return next(error);
                 }
-                response.json({ result }).send();
+                response.render(path.join(this._viewRoot, 'offers/offers'), { offers: result, moment: moment });
             });
         });
         return this;

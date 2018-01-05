@@ -4,20 +4,26 @@ import * as path from 'path';
 import { inject, injectable } from 'inversify';
 import { OfferController, StaticController } from './controllers/index';
 import container from './inversify.config';
+import { Logger } from './logger/index';
 
 @injectable()
 export class Server {
 
     private _server: express.Express;
+    private _logger: Logger;
 
     constructor(
+        @inject(Logger) logger: Logger,
         @inject(OfferController) offerController: OfferController,
         @inject(StaticController) staticController: StaticController) {
 
+        this._logger = logger;
+
         this._server = express();
         this._server.use(bodyparser.json());
+        this._server.set('view engine', 'ejs');
 
-        offerController.registerRoutes(this.server);
+        offerController.registerRoutes(this.server, path.join(__dirname, 'views'));
         staticController.registerRoutes(this.server, path.join(__dirname, 'site'));
 
         this._server.use(this.notFoundHandler);
@@ -34,6 +40,7 @@ export class Server {
     }
 
     private errorHandler(err: any, req: express.Request, res: express.Response, next: any) {
+        console.log(JSON.stringify(err));
         res.status(500).send();
     }
 
