@@ -12,8 +12,15 @@
                         <%- include('partials/offer', { offer: offer, moment: moment }) -%>
                     </div>
                 <%});%>
+                <div class="col-md-6 offset-md-3">
+                    <div class="pagination-container">
+                        <span class="page">1</span>
+                        <span class="page">2</span>
+                    </div>
+                </div>
             </div>
         </div>
+        <%- include('../shared/footer') -%>
         <%- include('../shared/scripts') -%>
         <script src="../js/viewscripts.js"></script>
     </body>

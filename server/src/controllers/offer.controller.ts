@@ -63,7 +63,7 @@ export class OfferController {
     private registerGetOffers() {
         this._server.get('/offers', (request: express.Request, response: express.Response, next: any) => {
             let logInformation: { databaseError: any } = { databaseError: undefined };
-            this._offerService.getAll((error: any, result: Offer[]) => {
+            this._offerService.getAll(request.query.page, request.query.size, (error: any, result: Offer[]) => {
                 if(error) {
                     logInformation.databaseError = error;
                     this._logger.error('[get]/offers', logInformation);

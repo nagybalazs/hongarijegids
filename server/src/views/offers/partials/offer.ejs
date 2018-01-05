@@ -1,10 +1,24 @@
 <div class="offer">
-    <div class="header"><%= moment(offer.timestamp).format('YYYY. MM. DD. HH:mm') %></div>
+    <div class="header">
+        <%= moment(offer.timestamp).format('YYYY. MM. DD. HH:mm') %>
+        <span>
+            <i class="fas fa-times"></i>
+        </span>
+    </div>
     <div class="holder">
-        <%= offer.name %>
-        <%= offer.email %>
-        <%= offer.prefdate %>
-        <%= offer.typestring %>
-        <%= offer.content %>
+        <div class="name">
+            <%= offer.name %>
+        </div>
+        <div class="email">
+            <span>
+                <%= offer.email %>
+            </span>
+            <span>
+                preferred date: <%= offer.prefdate %>
+            </span>
+        </div>
+        <div class="content">
+            <%= offer.content %>
+        </div>
     </div>
 </div>

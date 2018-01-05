@@ -30,14 +30,25 @@ export class OfferService extends DataService  {
         });
     }
 
-    public getAll(callback: any): void {
+    public getAll(page?: number, size?: number, callback?: any): void {
+
         let connection = this._database.connection;
         connection.connect((err) => {
             if(err) {
                 callback(err, null);
                 return;
             }
-            connection.query('SELECT * FROM `offerrequests`', (error, results, fields) => {
+
+            let normalized = this.normalizePageSize(page, size);
+            page = normalized.page;
+            size = normalized.size;
+
+            connection.query('SELECT * FROM `offerrequests` ORDER BY `timestamp` ASC LIMIT ? OFFSET ?', [size, ((page - 1) * size)], (error, results, fields) => {
+                
+                if(error) {
+                    callback(err, null);
+                }
+                
                 let offers = new Array<Offer>();
                 if(!results || results.length < 1) {
                     callback(null, offers);
@@ -53,6 +64,26 @@ export class OfferService extends DataService  {
                 return;
             });
         });
+    }
+
+    private normalizePageSize(page: number, size: number): { page: number, size: number } {
+        let result: { page: number, size: number };
+        let normalizedPage = this.normalizeNum(page, 1);
+        let normalizeSize = this.normalizeNum(size, 5);
+        return { page: normalizedPage, size: normalizeSize };
+    }
+
+    private normalizeNum(num: number, initVal: number): number {
+        if(!num) {
+            num = initVal;
+        }
+        else {
+            num = +num;
+            if(isNaN(num)) {
+                num = initVal;
+            }
+        }
+        return num;
     }
 
     private formatMySqlDate(date: Date) {
