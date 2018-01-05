@@ -1,7 +1,7 @@
 <div class="offer">
     <div class="header">
         <%= moment(offer.timestamp).format('YYYY. MM. DD. HH:mm') %>
-        <span>
+        <span id="delete-offer" offer-id="<%=offer.id%>">
             <i class="fas fa-times"></i>
         </span>
     </div>

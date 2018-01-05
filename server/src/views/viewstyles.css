@@ -37,6 +37,11 @@ body {
     color: white;
 }
 
+.offer .header span a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
 .offer .holder {
     border-radius: 0 0 3px 3px;
     max-width: 600px;

@@ -1,4 +1,4 @@
-import { OfferService, Offer } from '../services/dataaccess/index';
+import { OfferService, Offer, QueryResult } from '../services/dataaccess/index';
 import { EmailService, Email } from '../services/emailservice/index';
 import { Server } from '../server';
 import { inject, injectable } from 'inversify';
@@ -31,7 +31,8 @@ export class OfferController {
         this._server = server;
         this._viewRoot = viewRoot;
         this.registerPostOffer()
-            .registerGetOffers();
+            .registerGetOffers()
+            .registerDeleteOffer();
         return server;
     }
 
@@ -60,16 +61,32 @@ export class OfferController {
         return this;
     }
 
+    private registerDeleteOffer() {
+        this._server.delete('/offers/:offerId', (request: express.Request, response: express.Response, next: any) => {
+            if(!request.params.offerId || isNaN(+request.params.offerId)) {
+                return next({ errmess: 'invalid offer id'});
+            }
+            this._offerService.delete(request.params.offerId, (err: any) => {
+                if(err) {
+                    this._logger.error('[delete]/offers', err);
+                    return next(err);
+                }
+                response.status(200).send();
+            });
+        });
+        return this;
+    }
+
     private registerGetOffers() {
         this._server.get('/offers', (request: express.Request, response: express.Response, next: any) => {
             let logInformation: { databaseError: any } = { databaseError: undefined };
-            this._offerService.getAll(request.query.page, request.query.size, (error: any, result: Offer[]) => {
+            this._offerService.getAll(request.query.page, request.query.size, (error: any, result: QueryResult<Offer>) => {
                 if(error) {
                     logInformation.databaseError = error;
                     this._logger.error('[get]/offers', logInformation);
                     return next(error);
                 }
-                response.render(path.join(this._viewRoot, 'offers/offers'), { offers: result, moment: moment });
+                response.render(path.join(this._viewRoot, 'offers/offers'), { queryResult: result, moment: moment });
             });
         });
         return this;

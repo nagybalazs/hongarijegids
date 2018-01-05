@@ -1,8 +1,8 @@
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link" href="#">requests</a>
+    <a class="nav-link <%if(active == 'offers'){%>active<%}%>" href="/offers">requests</a>
   </li>
-  <li class="nav-item">
+  <li class="nav-item <%if(active == 'posts'){%>active<%}%>">
     <a class="nav-link" href="#">posts</a>
   </li>
     <li class="nav-item ml-auto">

@@ -4,18 +4,19 @@
         <%- include('../shared/styles') -%>
     </head>
     <body>
-        <%- include('../shared/header') -%>
+        <%- include('../shared/header', { active: 'offers' }) -%>
         <div class="container-fluid">
             <div class="row">
-                <% offers.forEach(function(offer) { %>
+                <% queryResult.items.forEach(function(offer) { %>
                     <div class="col-md-6 offset-md-3 offer-container">
                         <%- include('partials/offer', { offer: offer, moment: moment }) -%>
                     </div>
                 <%});%>
                 <div class="col-md-6 offset-md-3">
                     <div class="pagination-container">
-                        <span class="page">1</span>
-                        <span class="page">2</span>
+                        <% for(var i = 1; i <= Math.ceil(queryResult.totalItems / 5); i ++) {%>
+                            <a href="/offers?page=<%= i %>" class="page"><%= i %></a></span>
+                        <%  } %>
                     </div>
                 </div>
             </div>

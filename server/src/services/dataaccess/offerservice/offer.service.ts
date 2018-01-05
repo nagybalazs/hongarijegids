@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Database } from '../../../database/index';
-import { Offer } from '../index';
+import { Offer, QueryResult } from '../index';
 import { DataService } from '../dataservice/data.service';
 import * as mysql from 'mysql';
 import * as moment from 'moment';
@@ -43,24 +43,69 @@ export class OfferService extends DataService  {
             page = normalized.page;
             size = normalized.size;
 
-            connection.query('SELECT * FROM `offerrequests` ORDER BY `timestamp` ASC LIMIT ? OFFSET ?', [size, ((page - 1) * size)], (error, results, fields) => {
-                
-                if(error) {
-                    callback(err, null);
-                }
-                
-                let offers = new Array<Offer>();
-                if(!results || results.length < 1) {
-                    callback(null, offers);
+            connection.query('SELECT * FROM `offerrequests`', (e, r, f) => {
+                if(e) {
+                    callback(e, null);
+                    connection.end();
                     return;
                 }
-                results.forEach((offer: any) => {
-                    let populated = new Offer();
-                    populated.populate(offer);
-                    offers.push(populated);
+
+                let result = new QueryResult<Offer>();
+                let offers = new Array<Offer>();
+                result.items = offers;
+                result.totalItems = 0;
+
+                if(!r || r.length < 1) {
+                    callback(null, result);
+                    connection.end();
+                    return;
+                }
+
+                result.totalItems = r.length;
+
+                connection.query('SELECT * FROM `offerrequests` ORDER BY `timestamp` ASC LIMIT ? OFFSET ?', [size, ((page - 1) * size)], (error, results, fields) => {
+                    if(error) {
+                        callback(error, null);
+                        connection.end();
+                        return;
+                    }
+
+                    if(!results || results.length < 1) {
+                        callback(null, result);
+                        connection.end();
+                        return;
+                    }
+
+                    results.forEach((offer: any) => {
+                        let populated = new Offer();
+                        populated.populate(offer);
+                        offers.push(populated);
+                    });
+
+                    result.items = offers;
+                    callback(null, result);
+                    connection.end();
+                    return;
                 });
-                callback(null, offers);
+            });
+        });
+    }
+
+    public delete(id: number, callback: any): void {
+        let connection = this._database.connection;
+        connection.connect((err) => {
+            if(err) {
+                callback(err);
+                return;
+            }
+            connection.query('DELETE FROM `offerrequests` WHERE `id` = ?', id, (error, results, fields) => {
+                if(error) {
+                    callback(error);
+                    connection.end();
+                    return;
+                }
                 connection.end();
+                callback(null);
                 return;
             });
         });
