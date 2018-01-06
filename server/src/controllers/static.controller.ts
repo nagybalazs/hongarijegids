@@ -6,30 +6,20 @@ import { injectable } from 'inversify';
 export class StaticController {
 
     private _server: express.Express;
-    private _staticPathRoot: string;
+    private _rootPath: string;
 
     constructor() { }
 
-    public registerRoutes(server: express.Express, staticPathRoot: string): express.Express {
+    public registerRoutes(server: express.Express, rootPath: string): express.Express {
         this._server = server;
-        this._staticPathRoot = staticPathRoot;
-        this.registerRoot()
-            .registerStaticPaths();
+        this._rootPath = rootPath;
+        this.registerStaticPaths();
         return this._server;
     }
 
     private registerStaticPaths(): StaticController {
-        this._server.use('/css', express.static(path.join(this._staticPathRoot, 'css')));
-        this._server.use('/js', express.static(path.join(this._staticPathRoot, 'js')));
-        this._server.use('/img', express.static(path.join(this._staticPathRoot, 'img')));
-        this._server.use('/fonts', express.static(path.join(this._staticPathRoot, 'fonts')));
-        return this;
-    }
-
-    private registerRoot(): StaticController {
-        this._server.get('/', (request: express.Request, response: express.Response) => {
-            response.sendFile(path.join(this._staticPathRoot, 'index.html'));
-        });
+        this._server.use('/home', express.static(path.join(this._rootPath, 'site', 'home')));
+        this._server.use('/offers', express.static(path.join(this._rootPath, 'site', 'offers')));
         return this;
     }
 

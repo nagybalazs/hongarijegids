@@ -44,19 +44,23 @@ gulp.task('copy', function() {
 });
 
 gulp.task('copy-views', function() {
-	copy('src/views/**/*.ejs', distFolder + '/views');
+	copy('src/views/**/*.*', distFolder + '/views');
 });
 
 gulp.task('copy-view-styles', function() {
-	copy('src/views/**/*.css', distFolder + '/site/css');
+	copy('src/views/**/*.css', distFolder + '/site');
 });
 
 gulp.task('copy-view-scripts', function() {
-	copy('src/views/**/*.js', distFolder + '/site/js');
+	copy('src/views/**/*.js', distFolder + '/site');
+});
+
+gulp.task('copy-view-img', function() {
+	copy('src/views/**/*.{svg,jpg,png}', distFolder + '/site');
 });
 
 gulp.task('build', function(done) {
-	gulpSequence('clean-dist', 'compile', 'uglify', 'copy-view-styles', 'copy-view-scripts', 'copy-views', 'copy', done);
+	gulpSequence('clean-dist', 'compile', 'uglify', 'copy-view-styles', 'copy-view-scripts', 'copy-view-img', 'copy-views', 'copy', done);
 });
 
 gulp.task('uglify', function() {

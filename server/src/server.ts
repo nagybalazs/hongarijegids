@@ -2,7 +2,7 @@ import * as bodyparser from 'body-parser';
 import * as express from 'express';
 import * as path from 'path';
 import { inject, injectable } from 'inversify';
-import { OfferController, StaticController } from './controllers/index';
+import { OfferController, StaticController, HomeController } from './controllers/index';
 import container from './inversify.config';
 import { Logger } from './logger/index';
 
@@ -15,7 +15,8 @@ export class Server {
     constructor(
         @inject(Logger) logger: Logger,
         @inject(OfferController) offerController: OfferController,
-        @inject(StaticController) staticController: StaticController) {
+        @inject(StaticController) staticController: StaticController,
+        @inject(HomeController) homeController: HomeController) {
 
         this._logger = logger;
 
@@ -23,8 +24,9 @@ export class Server {
         this._server.use(bodyparser.json());
         this._server.set('view engine', 'ejs');
 
-        offerController.registerRoutes(this.server, path.join(__dirname, 'views'));
-        staticController.registerRoutes(this.server, path.join(__dirname, 'site'));
+        offerController.registerRoutes(this._server, __dirname);
+        staticController.registerRoutes(this._server, __dirname);
+        homeController.registerRoutes(this._server, __dirname);
 
         this._server.use(this.notFoundHandler);
         this._server.use(this.errorHandler);

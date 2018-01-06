@@ -15,7 +15,7 @@ export class OfferController {
     private _logger: Logger;
     private _offerService: OfferService;
     private _emailService: EmailService;
-    private _viewRoot: string;
+    private _rootPath: string;
 
     constructor(
         @inject(Logger) logger: Logger,
@@ -27,9 +27,9 @@ export class OfferController {
         this._emailService = emailService;
     }
 
-    public registerRoutes(server: express.Express, viewRoot: string): express.Express {
+    public registerRoutes(server: express.Express, rootPath: string): express.Express {
         this._server = server;
-        this._viewRoot = viewRoot;
+        this._rootPath = rootPath;
         this.registerPostOffer()
             .registerGetOffers()
             .registerDeleteOffer();
@@ -86,7 +86,7 @@ export class OfferController {
                     this._logger.error('[get]/offers', logInformation);
                     return next(error);
                 }
-                response.render(path.join(this._viewRoot, 'offers/offers'), { queryResult: result, moment: moment });
+                response.render(path.join(this._rootPath, 'views/offers/offers'), { queryResult: result, moment: moment });
             });
         });
         return this;
